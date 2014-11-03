@@ -14,6 +14,8 @@ endif
 PROJECT := {{cookiecutter.project_name}}
 PACKAGE := {{cookiecutter.package_name}}
 SOURCES := Makefile setup.py $(shell find $(PACKAGE) -name '*.py')
+PYX_SRC := $(shell find $(PACKAGE) -name '*.pyx')
+CEXT_SRC = ${PYX_SRC:.pyx=.c}
 EGG_INFO := $(subst -,_,$(PROJECT)).egg-info
 
 # System paths (automatically detected from the system Python)
@@ -60,6 +62,7 @@ PYREVERSE := $(BIN)/pyreverse
 NOSE := $(BIN)/nosetests
 PYTEST := $(BIN)/py.test
 COVERAGE := $(BIN)/coverage
+CYTHON := $(BIN)/cython
 
 # Remove if you don't want pip to cache downloads
 PIP_CACHE_DIR := .cache
@@ -81,11 +84,16 @@ $(ALL): $(SOURCES)
 .PHONY: ci
 ci: pep8 pep257 test tests
 
+# Cython Extension Build #####################################################
+
+%.c: %.pyx
+	$(CYTHON) -a $< -o $@
+
 # Development Installation ###################################################
 
 .PHONY: env
 env: .virtualenv $(EGG_INFO)
-$(EGG_INFO): Makefile setup.py requirements.txt
+$(EGG_INFO): Makefile setup.py requirements.txt $(CEXT_SRC)
 	VIRTUAL_ENV=$(ENV) $(PYTHON) setup.py develop
 	touch $(EGG_INFO)  # flag to indicate package is installed
 
@@ -211,6 +219,7 @@ clean-all: clean clean-env .clean-workspace .clean-cache
 	find . -name '*.pyc' -delete
 	find . -name '__pycache__' -delete
 	rm -rf *.egg-info
+	rm $(CEXT_SRC)
 
 .PHONY: .clean-doc
 .clean-doc:
