@@ -13,38 +13,51 @@ UNIT_TEST_COVERAGE := 88
 INTEGRATION_TEST_COVERAGE := 47
 COMBINED_TEST_COVERAGE := 100
 
-# System paths
+# System and virtualenv paths
+ENV := env
 PLATFORM := $(shell python -c 'import sys; print(sys.platform)')
-ifneq (,$(filter ,$(findstring win32, $(PLATFORM))) $(findstring cygwin, $(PLATFORM)))
+ifneq ($(findstring win32, $(PLATFORM)), )
 	WINDOWS := 1
 	SYS_PYTHON_DIR := C:\\Python$(PYTHON_MAJOR)$(PYTHON_MINOR)
 	SYS_PYTHON := $(SYS_PYTHON_DIR)\\python.exe
 	SYS_VIRTUALENV := $(SYS_PYTHON_DIR)\\Scripts\\virtualenv.exe
 	# https://bugs.launchpad.net/virtualenv/+bug/449537
 	export TCL_LIBRARY=$(SYS_PYTHON_DIR)\\tcl\\tcl8.5
-else
-	ifneq ($(findstring darwin, $(PLATFORM)), )
-		MAC := 1
-	else
-		LINUX := 1
-	endif
-	SYS_PYTHON := python$(PYTHON_MAJOR)
-	ifdef PYTHON_MINOR
-		SYS_PYTHON := $(SYS_PYTHON).$(PYTHON_MINOR)
-	endif
-	SYS_VIRTUALENV := virtualenv
-endif
-
-# virtualenv paths
-ENV := env
-ifneq (,$(filter ,$(findstring win32, $(PLATFORM))) $(findstring cygwin, $(PLATFORM)))
 	BIN := $(ENV)/Scripts
 	OPEN := cmd /c start
 else
-	BIN := $(ENV)/bin
 	ifneq ($(findstring cygwin, $(PLATFORM)), )
-		OPEN := cygstart
+		ifeq (y, $(PYWIN_ON_CYGWIN))
+			WINDOWS := 1
+			SYS_PYTHON_DIR := C:\\Python$(PYTHON_MAJOR)$(PYTHON_MINOR)
+			SYS_PYTHON := $(SYS_PYTHON_DIR)\\python.exe
+			SYS_VIRTUALENV := $(SYS_PYTHON_DIR)\\Scripts\\virtualenv.exe
+			# https://bugs.launchpad.net/virtualenv/+bug/449537
+			export TCL_LIBRARY=$(SYS_PYTHON_DIR)\\tcl\\tcl8.5
+			BIN := $(ENV)/Scripts
+			OPEN := cygstart
+		else
+			CYGWIN := 1
+			SYS_PYTHON := python$(PYTHON_MAJOR)
+			ifdef PYTHON_MINOR
+				SYS_PYTHON := $(SYS_PYTHON).$(PYTHON_MINOR)
+			endif
+			SYS_VIRTUALENV := virtualenv
+			BIN := $(ENV)/bin
+			OPEN := cygstart
+		endif
 	else
+		ifneq ($(findstring darwin, $(PLATFORM)), )
+			MAC := 1
+		else
+			LINUX := 1
+		endif
+		SYS_PYTHON := python$(PYTHON_MAJOR)
+		ifdef PYTHON_MINOR
+			SYS_PYTHON := $(SYS_PYTHON).$(PYTHON_MINOR)
+		endif
+		SYS_VIRTUALENV := virtualenv
+		BIN := $(ENV)/bin
 		OPEN := open
 	endif
 endif
