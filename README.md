@@ -2,25 +2,22 @@
 
 A Python project template for [cookiecutter][cookiecutter].
 
-[![Build Status](http://img.shields.io/travis/jacebrowning/template-python/master.svg)](https://travis-ci.org/jacebrowning/template-python)
-
 This is a template for a typical Python library following modern packaging conventions. It utilizes popular libraries alongside Make, Pandoc, and Graphviz to fully automate all development and deployment tasks.
 
-A live demo of this template: [jacebrowning/template-python-demo](https://github.com/jacebrowning/template-python-demo)
+This "fork" adds extra options for configuring the template to allow windows python through cygwin.
+
+A live demo of this template: [robertberrington/template-python-demo](https://github.com/robertberrington/template-python-demo)
 
 And a few sample projects based on this template:
 
-* [flask-restful/flask-restful](https://github.com/flask-restful/flask-restful)
-* [jacebrowning/doorstop](https://github.com/jacebrowning/doorstop)
-* [theovoss/BoggleSolver](https://github.com/theovoss/BoggleSolver)
-* [MichiganLabs/flask-gcm](https://github.com/MichiganLabs/flask-gcm)
+* tbd
 
 ## Get Started
 
 Install `cookiecutter` and generate a project:
 
     $ pip install cookiecutter>=0.9.1
-    $ cookiecutter gh:jacebrowning/template-python
+    $ cookiecutter gh:robertberrington/template-python
 
 Cookiecutter will ask you for some basic info (your name, project name, python package name, etc.) and generate a base Python project for you.
 
@@ -45,7 +42,7 @@ Cookiecutter will ask you for some basic info (your name, project name, python p
 To apply updates to an existing project, use the `update` branch and provide the same project details:
     
     $ cd <parent directory of existing project>
-    $ cookiecutter gh:jacebrowning/template-python --checkout update
+    $ cookiecutter gh:robertberrington/template-python --checkout update
     
 Then, discard all undesired changes before committing.
 

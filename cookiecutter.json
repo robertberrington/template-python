@@ -1,12 +1,13 @@
 {
-    "full_name": "Jace Browning",
-    "email": "jacebrowning@gmail.com",
-    "github_username": "jacebrowning",
+    "full_name": "Robert Berrington",
+    "email": "robertberringtoniii@gmail.com",
+    "github_username": "robertberrington",
     "github_repo": "template-python-demo",
-    "project_name": "PythonTemplateDemo",
-    "package_name": "demo",
-    "project_short_description": "A sample project templated from jacebrowning/template-python.",
+    "project_name": "TemplatePythonDemo",
+    "package_name": "temppydemo",
+    "project_short_description": "A sample project templated from robertberrington/template-python.",
     "test_runner": "pytest",
     "python_major_version": 2,
-    "python_minor_version": 7
+    "python_minor_version": 7,
+    "win_python_on_cygwin": y
 }

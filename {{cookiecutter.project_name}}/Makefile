@@ -6,6 +6,7 @@ SOURCES := Makefile setup.py $(shell find $(PACKAGE) -name '*.py')
 # Python settings
 PYTHON_MAJOR ?= {{cookiecutter.python_major_version}}
 PYTHON_MINOR ?= {{cookiecutter.python_minor_version}}
+PYWIN_ON_CYGWIN := {{cookiecutter.win_python_on_cygwin}}
 
 # Test settings
 UNIT_TEST_COVERAGE := 88
@@ -14,7 +15,7 @@ COMBINED_TEST_COVERAGE := 100
 
 # System paths
 PLATFORM := $(shell python -c 'import sys; print(sys.platform)')
-ifneq ($(findstring win32, $(PLATFORM)), )
+ifneq (,$(filter ,$(findstring win32, $(PLATFORM))) $(findstring cygwin, $(PLATFORM)))
 	WINDOWS := 1
 	SYS_PYTHON_DIR := C:\\Python$(PYTHON_MAJOR)$(PYTHON_MINOR)
 	SYS_PYTHON := $(SYS_PYTHON_DIR)\\python.exe
@@ -36,7 +37,7 @@ endif
 
 # virtualenv paths
 ENV := env
-ifneq ($(findstring win32, $(PLATFORM)), )
+ifneq (,$(filter ,$(findstring win32, $(PLATFORM))) $(findstring cygwin, $(PLATFORM)))
 	BIN := $(ENV)/Scripts
 	OPEN := cmd /c start
 else
