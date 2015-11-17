@@ -132,7 +132,7 @@ depends-dev: env Makefile $(DEPENDS_DEV_FLAG)
 $(DEPENDS_DEV_FLAG): Makefile
 	$(PIP) install --upgrade pip pep8radius pygments docutils pdoc wheel readme sniffer
 ifdef WINDOWS
-	$(PIP) install --upgrade pywin32
+	$(EASY_INSTALL) http://sourceforge.net/projects/pywin32/files/pywin32/Build%20219/pywin32-219.win32-py2.7.exe/download
 else ifdef MAC
 	$(PIP) install --upgrade pync MacFSEvents
 else ifdef LINUX
