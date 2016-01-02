@@ -85,6 +85,12 @@ DEPENDS_DEV_FLAG := $(ENV)/.depends-dev
 DOCS_FLAG := $(ENV)/.docs
 ALL_FLAG := $(ENV)/.all
 
+# CVS Details
+VERSION := $(shell python __version__.py)
+BRANCH := $(shell git rev-parse --symbolic-full-name --abbrev-ref HEAD)
+HASH := $(shell git rev-parse HEAD)
+HASH8 := $(shell git rev-parse --short=8 HEAD)
+
 # Main Targets #################################################################
 
 .PHONY: all
@@ -285,7 +291,7 @@ clean: .clean-dist .clean-test .clean-doc .clean-build
 	rm -rf $(ALL_FLAG)
 
 .PHONY: clean-all
-clean-all: clean .clean-env .clean-workspace
+clean-all: clean .clean-env .clean-release .clean-workspace
 
 .PHONY: .clean-build
 .clean-build:
@@ -308,6 +314,10 @@ clean-all: clean .clean-env .clean-workspace
 .PHONY: .clean-env
 .clean-env: clean
 	rm -rf $(ENV)
+
+.PHONY: .clean-release
+.clean-release:
+	rm -rf zips
 
 .PHONY: .clean-workspace
 .clean-workspace:
@@ -337,14 +347,25 @@ upload: .git-no-changes register
 
 .PHONY: .git-no-changes
 .git-no-changes:
-	@ if git diff --name-only --exit-code;        \
-	then                                          \
-		echo Git working copy is clean...;        \
-	else                                          \
-		echo ERROR: Git working copy is dirty!;   \
-		echo Commit your changes and try again.;  \
-		exit -1;                                  \
+	@if git diff-index --name-status --exit-code HEAD; \
+	then                                               \
+		echo Git working copy is clean...;             \
+	else                                               \
+		echo ;                                         \
+		echo ERROR: Git working copy is dirty!;        \
+		echo Commit your changes and try again.;       \
+		exit -1;                                       \
 	fi;
+
+.PHONY: archive
+archive: .git-no-changes
+	mkdir -p zips
+	git archive --format zip --output zips/$(PRJ_NAME)-Repo-$(BRANCH)-$(VERSION)-$(HASH8).zip $(BRANCH)
+
+.PHONY: release
+release: archive
+	git tag -a $(VERSION) -m '"Release of version $(VERSION)"'
+	git push --tags
 
 # System Installation ##########################################################
 
